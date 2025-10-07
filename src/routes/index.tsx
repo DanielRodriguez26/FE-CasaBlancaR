@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { ProtectedRoute } from './protected'
+import { ProtectedRoute } from '@/global/components/ProtectedRoute'
 import { routes } from './routes'
-import { NotFoundPage } from './NotFoundPage'
+import { NotFoundPage } from '@/features/pages'
 
 // Loading fallback component
 function LoadingFallback() {

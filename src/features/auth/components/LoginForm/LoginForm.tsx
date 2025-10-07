@@ -85,4 +85,4 @@ const LoginForm: React.FC = () => {
     );
 };
 
-export default Auth;
+export default LoginForm;

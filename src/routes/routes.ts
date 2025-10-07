@@ -2,7 +2,7 @@ import { lazy } from 'react'
 import { RouteConfig } from './types'
 
 // Lazy load feature components
-const Auth = lazy(() => import('@features/auth/auth'))
+const LoginForm = lazy(() => import('@features/auth').then(module => ({ default: module.LoginForm })))
 
 export const routes: {
     public: RouteConfig[]
@@ -11,7 +11,7 @@ export const routes: {
     public: [
         {
             path: '/login',
-            component: Auth,
+            component: LoginForm,
             title: 'Login',
         },
     ],
