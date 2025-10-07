@@ -1,5 +1,7 @@
 import { InputField } from "@/global/components/forms/InputField";
 import { useState } from "react";
+import { loginSchema } from "../../schemas";
+import { useAuthStore } from "@/stores/useAuthStore/useAuthStore";
 
 interface LoginFormData {
     email: string;
@@ -20,7 +22,8 @@ const LoginForm: React.FC = () => {
     // Estado para errores de validación
     const [errors, setErrors] = useState<FormErrors>({});
 
-    
+    const login = useAuthStore((state) => state.login);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -39,7 +42,39 @@ const LoginForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Form submitted:", formData);
+
+        //1. Validar con Zod
+        const result = loginSchema.safeParse(formData);
+        //2. Si hay errores, actualizamos el estado de errores
+        if (!result.success) {
+            //Crear obejto vacio para errores
+            const fieldErrors: FormErrors = {};
+
+            // Recorrer cada error de Zod
+            result.error.issues.forEach((issue) => {
+                const fieldName = issue.path[0] as keyof FormErrors;
+                fieldErrors[fieldName] = issue.message;
+            });
+
+            // Actualizar el estado de errores
+            setErrors(fieldErrors);
+
+            // Detener el submit
+            return;
+        }
+        else{
+            login({
+                id: 1,
+                email: result.data.email,
+                name: "Usuario",
+                role: "user",
+                workspaces: [],
+                token: "mock-token",
+                refreshToken: "mock-refresh-token",
+            });
+        }
+
+        console.log("Form submitted:", result.data);
     };
 
     return (
@@ -57,6 +92,7 @@ const LoginForm: React.FC = () => {
                                 id="email"
                                 name="email"
                                 type="text"
+                                error={errors.email}
                                 placeholder="Nombre de usuario"
                                 value={formData.email}
                                 onChange={handleInputChange}
@@ -65,6 +101,7 @@ const LoginForm: React.FC = () => {
                                 id="password"
                                 name="password"
                                 type="password"
+                                error={errors.password}
                                 placeholder="Contraseña"
                                 value={formData.password}
                                 onChange={handleInputChange}
@@ -75,7 +112,7 @@ const LoginForm: React.FC = () => {
                                 type="submit"
                                 className="mt-4 w-full rounded-md bg-slate-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             >
-                                "Iniciar Sesión"
+                                Iniciar Sesión
                             </button>
                         </div>
                     </form>

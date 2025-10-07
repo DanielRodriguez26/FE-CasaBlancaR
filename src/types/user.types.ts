@@ -1,10 +1,10 @@
 export interface User {
-    id: string
+    id: number
     email: string
     name: string
     avatar?: string
     workspaces: string[]
-    role: 'user' | 'admin' | 'moderator'
+    role: 'user' | 'admin' | 'moderator' 
 }
 
 export interface UserPresence {
