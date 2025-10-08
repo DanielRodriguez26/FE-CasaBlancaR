@@ -1,5 +1,5 @@
 import { InputField } from "@/global/components/forms/InputField";
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { loginSchema } from "../../schemas";
 import { useLogin } from "../../hooks/useLogin";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ interface FormErrors {
     password?: string;
 }
 
-const LoginForm: React.FC = () => {
+const LoginForm = () => {
     // Estado para los datos del formulario con tipado explicito
     const [formData, setFormData] = useState<LoginFormData>({
         email: "",
@@ -33,7 +33,7 @@ const LoginForm: React.FC = () => {
         }
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev, // Mantenemos los otro campos
@@ -49,7 +49,7 @@ const LoginForm: React.FC = () => {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
         //1. Validar con Zod

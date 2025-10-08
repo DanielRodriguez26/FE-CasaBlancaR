@@ -1,10 +1,12 @@
+import { ChangeEvent } from "react";
+
 interface InputFieldProps {
     id: string;
     name: string;
     type: string;
     placeholder?: string;
     value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     error?: string;
     autoComplete?: string;
     className?: string;

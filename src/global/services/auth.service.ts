@@ -1,11 +1,11 @@
 import { api } from '@lib/axios'
-import { LoginCredencials, LoginResponse } from '@/types/api.type'
+import { LoginCredentials, LoginResponse, SignupCredentials, SignupResponse } from '@/types/api.type'
 
 export const authService = {
     /**
      * Authentication with email and password
      */
-    login: async (credentials: LoginCredencials): Promise<LoginResponse> => {
+    login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
         const response = await api.post<LoginResponse>('/auth/login',credentials)
         return response.data
     },
@@ -14,8 +14,8 @@ export const authService = {
      *
      * Register a new user
      */
-    signup: async (credentials: LoginCredencials): Promise<LoginResponse> => {
-        const response = await api.post<LoginResponse>('/auth/signup',credentials)
+    signup: async (credentials: SignupCredentials): Promise<SignupResponse> => {
+        const response = await api.post<SignupResponse>('/auth/signup',credentials)
         return response.data
     },
 
