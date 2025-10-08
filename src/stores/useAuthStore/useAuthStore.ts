@@ -1,13 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { AuthUser, User } from '../../types'
+import { AuthUser } from '../../types'
 
 interface AuthStore {
     user: AuthUser | null
     isAuthenticated: boolean
     login: (user: AuthUser) => void
     logout: () => void
-    updateUser: (data: Partial<User>) => void
+    updateUser: (data: Partial<AuthUser>) => void
 }
 
 export const useAuthStore = create<AuthStore>()(

@@ -1,7 +1,9 @@
 import { InputField } from "@/global/components/forms/InputField";
 import { useState } from "react";
 import { loginSchema } from "../../schemas";
-import { useAuthStore } from "@/stores/useAuthStore/useAuthStore";
+import { useLogin } from "../../hooks/useLogin";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getApiErrorMessage } from "@/global/utils";
 
 interface LoginFormData {
     email: string;
@@ -21,8 +23,15 @@ const LoginForm: React.FC = () => {
     });
     // Estado para errores de validación
     const [errors, setErrors] = useState<FormErrors>({});
-
-    const login = useAuthStore((state) => state.login);
+    // React Router
+    const location = useLocation();
+    const navigate = useNavigate(); 
+    const from = location.state?.from?.pathname || "/dashboard";
+    const loginMutation = useLogin({
+        onSuccess: () => {
+            navigate(from, { replace: true });
+        }
+    });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -62,19 +71,8 @@ const LoginForm: React.FC = () => {
             // Detener el submit
             return;
         }
-        else{
-            login({
-                id: 1,
-                email: result.data.email,
-                name: "Usuario",
-                role: "user",
-                workspaces: [],
-                token: "mock-token",
-                refreshToken: "mock-refresh-token",
-            });
-        }
 
-        console.log("Form submitted:", result.data);
+        loginMutation.mutate(result.data);
     };
 
     return (
@@ -110,10 +108,16 @@ const LoginForm: React.FC = () => {
                         <div>
                             <button
                                 type="submit"
+                                disabled={loginMutation.isPending}
                                 className="mt-4 w-full rounded-md bg-slate-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             >
-                                Iniciar Sesión
+                                {loginMutation.isPending ? "Cargando..." : "Iniciar Sesión"}
                             </button>
+                            {loginMutation.isError && (
+                                <div className="mt-2 text-sm text-red-600">
+                                    {getApiErrorMessage(loginMutation.error)}
+                                </div>
+                            )}
                         </div>
                     </form>
                 </div>
