@@ -2,14 +2,36 @@ import { api } from './axios'
 import { useAuthStore } from '@/stores/useAuthStore/useAuthStore'
 import { authService } from '@/global/services/auth.service'
 
+// Helper function to get CSRF token from cookies
+function getCsrfToken(): string | null {
+    const name = 'XSRF-TOKEN'
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) {
+        return parts.pop()?.split(';').shift() || null
+    }
+    return null
+}
+
 export function setupInterceptors() {
-    // Request interceptor: auto add token
+    // Request interceptor: auto add token and CSRF protection
     api.interceptors.request.use(
         (config) => {
+            // Add authentication token
             const token = useAuthStore.getState().user?.token
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`
             }
+
+            // Add CSRF token for state-changing requests
+            const method = config.method?.toUpperCase()
+            if (method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+                const csrfToken = getCsrfToken()
+                if (csrfToken) {
+                    config.headers['X-XSRF-TOKEN'] = csrfToken
+                }
+            }
+
             return config
         },
         (error) => Promise.reject(error)

@@ -6,11 +6,20 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import LoginForm from "./LoginForm";
 
 vi.mock("../../hooks/useLogin", () => ({
-    useLogin: () => ({
+    useLogin: (options?: any) => ({
         mutate: vi.fn(),
-        isLoading: false,
+        isPending: false,
         isError: false,
         error: null
+    })
+}))
+
+vi.mock("@/global/hooks/useRateLimit", () => ({
+    useRateLimit: () => ({
+        isBlocked: false,
+        remainingTime: 0,
+        reset: vi.fn(),
+        recordAttempt: vi.fn()
     })
 }))
 
@@ -34,87 +43,87 @@ const renderwithProviders = (component: React.ReactElement) => {
 /**
  * Test Suite: LoginForm Component
  *
- * Objetivo: Validar el comportamiento del componente LoginForm siguiendo TDD estricto
+ * Objective: Validate LoginForm component behavior following strict TDD
  *
- * Categorías de tests:
- * 1. Renderizado inicial
- * 2. Interacción con inputs
- * 3. Validación de formulario (FASE RED - no implementado aún)
- * 4. Submit del formulario
+ * Test categories:
+ * 1. Initial rendering
+ * 2. Input interaction
+ * 3. Form validation (RED PHASE - not implemented yet)
+ * 4. Form submission
  */
 
 describe("LoginForm Component", () => {
     /**
-     * Setup: Se ejecuta antes de cada test
-     * Garantiza que cada test tenga un DOM limpio
+     * Setup: Runs before each test
+     * Ensures each test has a clean DOM
      */
     beforeEach(() => {
-        // React Testing Library limpia automáticamente después de cada test
-        // Este beforeEach es opcional pero útil para setups futuros
+        // React Testing Library automatically cleans up after each test
+        // This beforeEach is optional but useful for future setups
     });
 
     // ============================================
-    // CATEGORÍA 1: RENDERIZADO INICIAL
+    // CATEGORY 1: INITIAL RENDERING
     // ============================================
 
-    describe("Renderizado inicial", () => {
-        it("debe renderizar el formulario correctamente", () => {
-            // Arrange: Renderizar el componente
+    describe("Initial rendering", () => {
+        it("should render the form correctly", () => {
+            // Arrange: Render the component
             renderwithProviders(<LoginForm />)
 
-            // Act: No hay acción, solo verificamos renderizado
+            // Act: No action, just verify rendering
 
-            // Assert: Verificar que el formulario existe
+            // Assert: Verify the form exists
             const form = document.querySelector("form");
             expect(form).toBeInTheDocument();
         });
 
-        it('debe mostrar el título "Iniciar Sesión"', () => {
+        it('should display the "Iniciar Sesión" heading', () => {
             // Arrange
             renderwithProviders(<LoginForm />)
 
-            // Act: No hay acción
+            // Act: No action
 
-            // Assert: Verificar que el título existe y es visible
+            // Assert: Verify the heading exists and is visible
             const heading = screen.getByRole("heading", { name: /iniciar sesión/i });
             expect(heading).toBeInTheDocument();
             expect(heading).toHaveTextContent("Iniciar Sesión");
         });
 
-        it("debe mostrar el campo de email con placeholder correcto", () => {
+        it("should display the email field with correct placeholder", () => {
             // Arrange
             renderwithProviders(<LoginForm />)
 
-            // Act: No hay acción
+            // Act: No action
 
-            // Assert: Verificar que el input de email existe
-            const emailInput = screen.getByPlaceholderText(/nombre de usuario/i);
+            // Assert: Verify the email input exists
+            const emailInput = screen.getByPlaceholderText(/email/i);
             expect(emailInput).toBeInTheDocument();
-            expect(emailInput).toHaveAttribute("type", "text");
+            expect(emailInput).toHaveAttribute("type", "email");
             expect(emailInput).toHaveAttribute("name", "email");
         });
 
-        it("debe mostrar el campo de password con placeholder correcto", () => {
+        it("should display the password field with correct placeholder", () => {
             // Arrange
             renderwithProviders(<LoginForm />)
 
-            // Act: No hay acción
+            // Act: No action
 
-            // Assert: Verificar que el input de password existe
+            // Assert: Verify the password input exists
             const passwordInput = screen.getByPlaceholderText(/contraseña/i);
             expect(passwordInput).toBeInTheDocument();
             expect(passwordInput).toHaveAttribute("type", "password");
             expect(passwordInput).toHaveAttribute("name", "password");
         });
 
-        it("debe mostrar el botón de submit con texto correcto", () => {
+        it("should display the submit button with correct text", () => {
             // Arrange
             renderwithProviders(<LoginForm />)
 
-            // Act: No hay acción
+            // Act: No action
 
-            // Assert: Verificar que el botón existe
-            // Nota: El componente tiene "Iniciar Sesión" con comillas, buscar por contenido
+            // Assert: Verify the button exists
+            // Note: The component has "Iniciar Sesión" in quotes, search by content
             const submitButton = screen.getByRole("button", { name: /iniciar sesión/i });
             expect(submitButton).toBeInTheDocument();
             expect(submitButton).toHaveAttribute("type", "submit");
@@ -122,71 +131,71 @@ describe("LoginForm Component", () => {
     });
 
     // ============================================
-    // CATEGORÍA 2: INTERACCIÓN CON INPUTS
+    // CATEGORY 2: INPUT INTERACTION
     // ============================================
 
-    describe("Interacción con inputs", () => {
-        it("debe actualizar el estado cuando el usuario escribe en email", async () => {
+    describe("Input interaction", () => {
+        it("should update state when user types in email", async () => {
             // Arrange
             const user = userEvent.setup();
             renderwithProviders(<LoginForm />)
-            const emailInput = screen.getByPlaceholderText(/nombre de usuario/i);
+            const emailInput = screen.getByPlaceholderText(/email/i);
 
-            // Act: Usuario escribe en el campo de email
+            // Act: User types in the email field
             await user.type(emailInput, "usuario@example.com");
 
-            // Assert: Verificar que el valor se actualizó
+            // Assert: Verify the value was updated
             expect(emailInput).toHaveValue("usuario@example.com");
         });
 
-        it("debe actualizar el estado cuando el usuario escribe en password", async () => {
+        it("should update state when user types in password", async () => {
             // Arrange
             const user = userEvent.setup();
             renderwithProviders(<LoginForm />)
             const passwordInput = screen.getByPlaceholderText(/contraseña/i);
 
-            // Act: Usuario escribe en el campo de password
+            // Act: User types in the password field
             await user.type(passwordInput, "miPassword123");
 
-            // Assert: Verificar que el valor se actualizó
+            // Assert: Verify the value was updated
             expect(passwordInput).toHaveValue("miPassword123");
         });
 
-        it("debe permitir escribir en ambos campos independientemente", async () => {
+        it("should allow typing in both fields independently", async () => {
             // Arrange
             const user = userEvent.setup();
             renderwithProviders(<LoginForm />)
-            const emailInput = screen.getByPlaceholderText(/nombre de usuario/i);
+            const emailInput = screen.getByPlaceholderText(/email/i);
             const passwordInput = screen.getByPlaceholderText(/contraseña/i);
 
-            // Act: Usuario escribe en ambos campos
+            // Act: User types in both fields
             await user.type(emailInput, "test@test.com");
             await user.type(passwordInput, "password123");
 
-            // Assert: Verificar que ambos valores se mantienen
+            // Assert: Verify both values are maintained
             expect(emailInput).toHaveValue("test@test.com");
             expect(passwordInput).toHaveValue("password123");
         });
     });
 
     // ============================================
-    // CATEGORÍA 3: VALIDACIÓN (FASE RED)
-    // Estos tests FALLARÁN porque la validación no está implementada
+    // CATEGORY 3: VALIDATION (RED PHASE)
+    // These tests will FAIL because validation is not implemented
     // ============================================
 
-    describe("Validación de formulario (FASE RED - No implementado)", () => {
-        it("debe mostrar error si email está vacío al submit", async () => {
+    describe("Form validation (RED PHASE - Not implemented)", () => {
+        it("should show error if email is empty on submit", async () => {
             // Arrange
             const user = userEvent.setup();
             renderwithProviders(<LoginForm />)
             const submitButton = screen.getByRole("button", { name: /iniciar sesión/i });
 
-            // Act: Usuario intenta submitear sin llenar email
+            // Act: User attempts to submit without filling email
             await user.click(submitButton);
 
-            // Assert: Debería mostrar mensaje de error (Zod muestra "no es válido" para string vacío)
+            // Assert: Should display error message
             await waitFor(() => {
-                const errorMessage = screen.getByText(/el email no es válido/i);
+                const errorMessage = screen.getByText("El email no es válido");
                 expect(errorMessage).toBeInTheDocument();
             });
         });
@@ -195,17 +204,16 @@ describe("LoginForm Component", () => {
             // Arrange
             const user = userEvent.setup();
             renderwithProviders(<LoginForm />)
-            const emailInput = screen.getByPlaceholderText(/nombre de usuario/i);
+            const emailInput = screen.getByPlaceholderText(/email/i);
             const submitButton = screen.getByRole("button", { name: /iniciar sesión/i });
 
             // Act: Usuario escribe email inválido y submitea
             await user.type(emailInput, "emailinvalido");
             await user.click(submitButton);
 
-            // Assert: Debería mostrar mensaje de error
-            // ESTE TEST FALLARÁ porque la validación no está implementada
+            // Assert: Should display error message
             await waitFor(() => {
-                const errorMessage = screen.getByText(/el email no es válido/i);
+                const errorMessage = screen.getByText("El email no es válido");
                 expect(errorMessage).toBeInTheDocument();
             });
         });
@@ -219,7 +227,7 @@ describe("LoginForm Component", () => {
             // Act: Usuario intenta submitear sin llenar password
             await user.click(submitButton);
 
-            // Assert: Debería mostrar mensaje de error (Zod muestra error de longitud mínima)
+            // Assert: Should display error message (Zod muestra error de longitud mínima)
             await waitFor(() => {
                 const errorMessage = screen.getByText(/la contraseña debe tener al menos 8 caracteres/i);
                 expect(errorMessage).toBeInTheDocument();
@@ -237,7 +245,7 @@ describe("LoginForm Component", () => {
             await user.type(passwordInput, "abc123");
             await user.click(submitButton);
 
-            // Assert: Debería mostrar mensaje de error
+            // Assert: Should display error message
             // ESTE TEST FALLARÁ porque la validación no está implementada
             await waitFor(() => {
                 const errorMessage = screen.getByText(/la contraseña debe tener al menos 8 caracteres/i);
@@ -249,7 +257,7 @@ describe("LoginForm Component", () => {
             // Arrange
             const user = userEvent.setup();
             renderwithProviders(<LoginForm />)
-            const emailInput = screen.getByPlaceholderText(/nombre de usuario/i);
+            const emailInput = screen.getByPlaceholderText(/email/i);
             const submitButton = screen.getByRole("button", { name: /iniciar sesión/i });
 
             // Act: Usuario submitea con email vacío (genera error), luego escribe
@@ -257,7 +265,7 @@ describe("LoginForm Component", () => {
 
             // Esperar a que aparezca el error
             await waitFor(() => {
-                expect(screen.getByText(/el email no es válido/i)).toBeInTheDocument();
+                expect(screen.getByText("El email no es válido")).toBeInTheDocument();
             });
 
             // Usuario empieza a escribir
@@ -265,7 +273,7 @@ describe("LoginForm Component", () => {
 
             // Assert: El error debería desaparecer
             await waitFor(() => {
-                expect(screen.queryByText(/el email no es válido/i)).not.toBeInTheDocument();
+                expect(screen.queryByText("El email no es válido")).not.toBeInTheDocument();
             });
         });
 
@@ -336,7 +344,7 @@ describe("LoginForm Component", () => {
             // Arrange
             const user = userEvent.setup();
             renderwithProviders(<LoginForm />)
-            const emailInput = screen.getByPlaceholderText(/nombre de usuario/i);
+            const emailInput = screen.getByPlaceholderText(/email/i);
             const passwordInput = screen.getByPlaceholderText(/contraseña/i);
             const submitButton = screen.getByRole("button", { name: /iniciar sesión/i });
 

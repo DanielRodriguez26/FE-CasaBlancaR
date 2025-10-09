@@ -18,44 +18,44 @@ interface FormErrors {
 }
 
 const LoginForm = () => {
-    // Estado para los datos del formulario con tipado explicito
+    // State for form data with explicit typing
     const [formData, setFormData] = useState<LoginFormData>({
         email: '',
         password: '',
         rememberMe: false,
     });
-    // Estado para errores de validación
+    // State for validation errors
     const [errors, setErrors] = useState<FormErrors>({});
     // React Router
     const location = useLocation();
     const navigate = useNavigate();
     const from = location.state?.from?.pathname || '/dashboard';
 
-    // Rate limiting - prevenir ataques de fuerza bruta
+    // Rate limiting - prevent brute force attacks
     const rateLimit = useRateLimit('login', {
         maxAttempts: 5,
-        windowMs: 60000, // 1 minuto
-        blockDurationMs: 300000, // 5 minutos
+        windowMs: 60000, // 1 minute
+        blockDurationMs: 300000, // 5 minutes
     });
 
     const loginMutation = useLogin({
         onSuccess: () => {
-            rateLimit.reset(); // Resetear contador en login exitoso
+            rateLimit.reset(); // Reset counter on successful login
             navigate(from, { replace: true });
         },
         onError: () => {
-            rateLimit.recordAttempt(); // Incrementar contador en error
+            rateLimit.recordAttempt(); // Increment counter on error
         },
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
-            ...prev, // Mantenemos los otro campos
-            [name]: value, // Actualizamos el campo que cambió
+            ...prev, // Keep other fields
+            [name]: value, // Update the changed field
         }));
 
-        // Limpiamos el error del campo que si existe
+        // Clear the field error if it exists
         if (errors[name as keyof FormErrors]) {
             setErrors((prev) => ({
                 ...prev,
@@ -67,31 +67,31 @@ const LoginForm = () => {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        // 0. Verificar rate limiting
+        // 0. Check rate limiting
         if (rateLimit.isBlocked) {
             setErrors({
-                email: `Demasiados intentos. Espera ${rateLimit.remainingTime} segundos.`,
+                email: `Too many attempts. Wait ${rateLimit.remainingTime} seconds.`,
             });
             return;
         }
 
-        //1. Validar con Zod
+        // 1. Validate with Zod
         const result = loginSchema.safeParse(formData);
-        //2. Si hay errores, actualizamos el estado de errores
+        // 2. If there are errors, update error state
         if (!result.success) {
-            //Crear obejto vacio para errores
+            // Create empty object for errors
             const fieldErrors: FormErrors = {};
 
-            // Recorrer cada error de Zod
+            // Iterate through each Zod error
             result.error.issues.forEach((issue) => {
                 const fieldName = issue.path[0] as keyof FormErrors;
                 fieldErrors[fieldName] = issue.message;
             });
 
-            // Actualizar el estado de errores
+            // Update error state
             setErrors(fieldErrors);
 
-            // Detener el submit
+            // Stop the submit
             return;
         }
 
@@ -131,7 +131,7 @@ const LoginForm = () => {
                             />
                         </div>
 
-                        {/* Opciones adicionales: Recordarme y Olvidé contraseña */}
+                        {/* Additional options: Remember me and Forgot password */}
                         <div className="flex items-center justify-between mt-4">
                             <label className="flex items-center cursor-pointer">
                                 <input

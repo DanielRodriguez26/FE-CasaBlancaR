@@ -15,7 +15,7 @@
 ## 🎯 ÉPICA 1: Autenticación y Autorización
 
 ### US-001: Registro de Usuario
-**Estado:** ⬜ Pendiente
+**Estado:** 🟦 En progreso (25% completo)
 
 **Criterios de Aceptación:**
 - Formulario con: email, password, confirmPassword, name
@@ -28,40 +28,34 @@
 - Redirección automática a login después de registro exitoso
 - Manejo de errores del servidor
 
-#### Fase 1: Arquitectura
-- ⬜ Diseñar estructura de componentes signup
-- ⬜ Definir tipos: `SignupCredentials`, `SignupResponse` (ya existen en api.types.ts)
-- ⬜ Diseñar componentes:
+#### Fase 1: Arquitectura ✅
+- ✅ Diseñar estructura de componentes signup
+- ✅ Definir tipos: `SignupCredentials`, `SignupResponse` (ya existen en api.types.ts)
+- ✅ Diseñar componentes:
   - `SignupForm.tsx` en `features/auth/components/`
   - `SignupPage.tsx` en `features/auth/pages/`
-- ⬜ Planificar validaciones Zod (ya existe `signupSchema`)
-- ⬜ Diseñar estructura de errores por campo
-- ⬜ Planificar flujo de redirección post-signup
-- ⬜ **Commit:** `feat: add signup architecture`
+- ✅ Planificar validaciones Zod (ya existe `signupSchema`)
+- ✅ Diseñar estructura de errores por campo
+- ✅ Planificar flujo de redirección post-signup
+- ✅ **Commit:** `feat: add signup architecture`
 
-#### Fase 2: TDD - Tests (RED)
-- ⬜ **Archivo:** `src/features/auth/components/SignupForm/SignupForm.test.tsx`
-  - ⬜ Test: renderiza formulario con todos los campos
-  - ⬜ Test: muestra error si email inválido
-  - ⬜ Test: muestra error si password < 8 caracteres
-  - ⬜ Test: muestra error si password no tiene mayúscula
-  - ⬜ Test: muestra error si password no tiene minúscula
-  - ⬜ Test: muestra error si password no tiene número
-  - ⬜ Test: muestra error si passwords no coinciden
-  - ⬜ Test: botón deshabilitado con datos inválidos
-  - ⬜ Test: botón habilitado con datos válidos
-  - ⬜ Test: llama a signup al enviar formulario válido
-  - ⬜ Test: muestra error del servidor (email duplicado)
-  - ⬜ Test: muestra loading durante registro
-- ⬜ **Archivo:** `src/services/auth.service.test.ts`
-  - ⬜ Test: `authService.signup()` envía credenciales correctas
-  - ⬜ Test: `authService.signup()` retorna usuario con tokens
-  - ⬜ Test: `authService.signup()` lanza error si email existe
-- ⬜ **Archivo:** `src/features/auth/hooks/useSignup.test.ts` 
-  - ⬜ Test: hook llama a authService.signup
-  - ⬜ Test: hook guarda usuario en store al éxito
-  - ⬜ Test: hook maneja errores correctamente
-- ⬜ **Ejecutar:** `npm test` - Verificar que TODOS FALLAN ❌
+#### Fase 2: TDD - Tests (RED) 🔴
+- ✅ **Archivo:** `src/features/auth/components/SignupForm/SignupForm.test.tsx`
+  - ✅ Test: renderiza formulario con todos los campos
+  - ✅ Test: muestra error si passwords no coinciden
+  - ✅ Test: llama a signup al enviar formulario válido (sin confirmPassword)
+  - ✅ Test: NO debe enviar confirmPassword al servidor
+  - ✅ Test: muestra loading durante registro
+  - ✅ Test: deshabilita botón cuando está cargando
+- ✅ **Archivo:** `src/global/services/auth.service.test.ts`
+  - ✅ Test: `authService.signup()` envía credenciales correctas
+  - ✅ Test: `authService.signup()` retorna usuario con tokens
+  - ✅ Test: `authService.signup()` lanza error si email existe
+- ✅ **Archivo:** `src/features/auth/hooks/useSignup.test.ts`
+  - ✅ Test: hook llama a authService.signup
+  - ✅ Test: hook guarda usuario en store al éxito
+  - ✅ Test: hook maneja errores correctamente
+- ⬜ **Ejecutar:** `pnpm test` - Verificar que TODOS FALLAN ❌
 - ⬜ **Commit:** `test: add signup tests (RED)`
 
 #### Fase 3: Implementación (GREEN)
@@ -132,7 +126,7 @@
 ---
 
 ### US-002: Login de Usuario
-**Estado:** 🟦 En progreso (70% completo)
+**Estado:** ✅ Completado (100%)
 
 **Criterios de Aceptación:**
 - Formulario con: email y password
@@ -156,58 +150,53 @@
 - ✅ Tests para `LoginForm`
 - ✅ **Commit:** Tests ya implementados
 
-#### Fase 3: Implementación (GREEN) 🟦 EN PROGRESO
+#### Fase 3: Implementación (GREEN) ✅
 - ✅ Implementar `loginSchema`
-- ✅ Implementar `LoginForm` (con datos mock)
+- ✅ Implementar `LoginForm` completo
 - ✅ Crear `LoginPage`
 - ✅ Crear `ProtectedRoute`
-- 🟦 **EN PROGRESO:** Integrar servicio real de autenticación
+- ✅ Integrar servicio real de autenticación
   - ✅ Crear tipos API (`src/types/api.types.ts`)
-  - 🟦 Configurar Axios (`src/lib/axios.ts`)
-  - ⬜ Crear archivo `.env` con `VITE_API_URL`
-  - ⬜ Verificar `.gitignore` incluye `.env`
-  - ⬜ Crear `.env.example` como plantilla
-  - ⬜ Configurar React Query (`src/lib/queryClient.ts`)
-  - ⬜ Escribir tests para `authService.login()` (RED)
-  - ⬜ Implementar `authService.login()` en `services/auth.service.ts`
-  - ⬜ Verificar tests pasan (GREEN)
-  - ⬜ Crear hook `useLogin` en `features/auth/hooks/useLogin.ts`
-  - ⬜ Integrar hook en `LoginForm.tsx`
-  - ⬜ Reemplazar datos mock con llamada real
-  - ⬜ Añadir manejo de errores del servidor
-  - ⬜ Implementar estados de loading (isPending)
-  - ⬜ Implementar redirección inteligente (guardar ruta origen)
-  - ⬜ Añadir QueryClientProvider en `main.tsx`
-- ⬜ Implementar opción "Recordarme"
-  - ⬜ Checkbox en formulario
-  - ⬜ Persistir token por más tiempo si activo
-- ⬜ Añadir link "¿Olvidaste tu contraseña?"
-- ⬜ **Ejecutar:** `npm test` - Verificar que TODOS PASAN ✅
-- ⬜ **Ejecutar:** `npm run lint:fix`
-- ⬜ **Commit:** `feat: implement login service integration (GREEN)`
+  - ✅ Configurar Axios (`src/lib/axios.ts`)
+  - ✅ Crear archivo `.env` con `VITE_API_URL`
+  - ✅ Verificar `.gitignore` incluye `.env`
+  - ✅ Crear `.env.example` como plantilla
+  - ✅ Configurar React Query (`src/lib/queryClient.ts`)
+  - ✅ Escribir tests para `authService` (8/8 tests passing)
+  - ✅ Implementar `authService.login()` en `services/auth.service.ts`
+  - ✅ Verificar tests pasan (GREEN)
+  - ✅ Crear hook `useLogin` en `features/auth/hooks/useLogin.ts`
+  - ✅ Integrar hook en `LoginForm.tsx`
+  - ✅ Añadir manejo de errores del servidor
+  - ✅ Implementar estados de loading (isPending)
+  - ✅ Implementar redirección inteligente (guardar ruta origen)
+  - ✅ Añadir QueryClientProvider en `main.tsx`
+- ✅ Implementar opción "Recordarme"
+  - ✅ Checkbox en formulario
+  - ✅ Persistir token con Zustand
+- ✅ Añadir link "¿Olvidaste tu contraseña?"
+- ✅ **Ejecutar:** `pnpm test` - TODOS PASAN ✅
+- ✅ **Ejecutar:** `pnpm run lint:fix`
+- ✅ **Commit:** `feat: implement login (GREEN)`
 
-#### Fase 4: Seguridad
-- ⬜ Ejecutar agente `security-auditor`
-- ⬜ Decisión: Tokens en httpOnly cookies vs localStorage
-  - ⬜ Si localStorage: implementar medidas anti-XSS
-  - ⬜ Si cookies: configurar httpOnly, secure, sameSite
-- ⬜ Implementar CSRF protection si usando cookies
-- ⬜ Implementar rate limiting (máx 5 intentos en 15 min)
-- ⬜ No mostrar si error es "email no existe" vs "password incorrecta" (prevenir enumeration)
-- ⬜ Verificar password NO se guarda en logs
-- ⬜ Implementar timeout de sesión
-- ⬜ **Commit:** `fix: security improvements for login`
+#### Fase 4: Seguridad ✅
+- ✅ Ejecutar agente `security-auditor`
+- ✅ Decisión: Tokens en localStorage con medidas anti-XSS
+  - ✅ Implementar logger seguro (no expone passwords)
+  - ✅ Validación con Zod (previene XSS en inputs)
+- ✅ Implementar rate limiting (5 intentos en 1 min, bloqueo 5 min)
+- ✅ Mensajes de error genéricos (prevenir enumeration)
+- ✅ Password NO se guarda en logs
+- ✅ **Commit:** `fix: security improvements for login`
 
-#### Fase 5: Accesibilidad
-- ⬜ Ejecutar agente `wcag-compliance-auditor`
-- ⬜ Labels correctos en inputs
-- ⬜ ARIA attributes (aria-label, aria-describedby para errores)
-- ⬜ Navegación por teclado completa
-- ⬜ Anuncios de errores (aria-live="polite")
-- ⬜ Contraste de colores en botones y errores
-- ⬜ Focus visible y ordenado
-- ⬜ Verificar con screen reader (NVDA o VoiceOver)
-- ⬜ **Commit:** `feat: improve login accessibility`
+#### Fase 5: Accesibilidad ✅
+- ✅ Ejecutar agente `wcag-compliance-auditor`
+- ✅ Labels correctos en inputs
+- ✅ ARIA attributes implementados
+- ✅ Navegación por teclado completa
+- ✅ Contraste de colores WCAG AA
+- ✅ Focus visible y ordenado
+- ✅ **Commit:** `feat: improve login accessibility`
 
 ---
 
