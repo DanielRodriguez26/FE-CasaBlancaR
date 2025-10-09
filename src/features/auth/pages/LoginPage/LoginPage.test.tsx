@@ -1,11 +1,26 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { BrowserRouter } from "react-router-dom";
-import  LoginPage  from "./LoginPage";
+import LoginPage from "./LoginPage";
 import { useAuthStore } from "@/stores/useAuthStore/useAuthStore";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Mock the useAuthStore hook
 vi.mock("@/stores/useAuthStore/useAuthStore");
+
+const renderWithProviders = (component: React.ReactElement) => {
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: { retry: false },
+            mutations: { retry: false },
+        },
+    });
+    return render(
+        <QueryClientProvider client={queryClient}>
+            <BrowserRouter>{component}</BrowserRouter>
+        </QueryClientProvider>,
+    );
+};
 
 // Mock the useNavigate hook from react-router-dom
 const mockNavigate = vi.fn();
@@ -40,7 +55,7 @@ describe("LoginPage Component", () => {
     describe("Basic Rendering", () => {
         it("render LoginForm component", () => {
             //Arrange: mock of store
-            vi.mocked(useAuthStore).mockRejectedValue({
+            vi.mocked(useAuthStore).mockReturnValue({
                 user: null,
                 isAuthenticated: false,
                 login: vi.fn(),
@@ -49,12 +64,7 @@ describe("LoginPage Component", () => {
             });
 
             //Att: render the Page
-            render(
-                <BrowserRouter>
-                    <LoginPage />
-                </BrowserRouter>,
-            );
-
+            renderWithProviders(<LoginPage />);
             //Assert: check if the LoginForm is in the document
             // find the title "Iniciar Sesion" that is LoginForm component
             const heading = screen.getByRole("heading", { name: /iniciar sesión/i });
@@ -63,7 +73,7 @@ describe("LoginPage Component", () => {
 
         it("Must show the title of the App", () => {
             //Arrange: mock of store
-            vi.mocked(useAuthStore).mockRejectedValue({
+            vi.mocked(useAuthStore).mockReturnValue({
                 user: null,
                 isAuthenticated: false,
                 login: vi.fn(),
@@ -72,11 +82,7 @@ describe("LoginPage Component", () => {
             });
 
             //Att
-            render(
-                <BrowserRouter>
-                    <LoginPage />
-                </BrowserRouter>,
-            );
+            renderWithProviders(<LoginPage />);
             //Assert Check if the title of the App is in the document
             const title = screen.getByText(/casablancar/i);
             expect(title).toBeInTheDocument();
@@ -106,11 +112,7 @@ describe("LoginPage Component", () => {
                 updateUser: vi.fn(),
             });
             //Att
-            render(
-                <BrowserRouter>
-                    <LoginPage />
-                </BrowserRouter>,
-            );
+            renderWithProviders(<LoginPage />);
             //Assert: check if navigate was called with /dashboard
             expect(mockNavigate).toHaveBeenCalledWith("/dashboard", { replace: true });
         });

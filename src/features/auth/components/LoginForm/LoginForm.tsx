@@ -89,9 +89,10 @@ const LoginForm = () => {
                             <InputField
                                 id="email"
                                 name="email"
-                                type="text"
+                                type="email"
+                                autoComplete="email"
                                 error={errors.email}
-                                placeholder="Nombre de usuario"
+                                placeholder="Email"
                                 value={formData.email}
                                 onChange={handleInputChange}
                             />
@@ -99,6 +100,7 @@ const LoginForm = () => {
                                 id="password"
                                 name="password"
                                 type="password"
+                                autoComplete="current-password"
                                 error={errors.password}
                                 placeholder="Contraseña"
                                 value={formData.password}

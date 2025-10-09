@@ -2,14 +2,14 @@ import { describe, it, expect, vi } from 'vitest'
 import { authService } from './auth.service'
 
 // Axios Mock
-vi.mock('../lib/axios', () => ({
+vi.mock('@lib/axios', () => ({
     api: {
         post: vi.fn()
     }
 }))
 
 describe('authService', () => {
-    describe('Must send credencials and retun user with token', async () => {
+    it('Must send credencials and retun user with token', async () => {
         //Arrange: Preparing mock data
         const credentials = {
             email: 'test@test.com',
@@ -20,9 +20,12 @@ describe('authService', () => {
                 user: {
                     id: 1,
                     email: 'test@test.com',
-                    token: 'mock-jwt-token',
-                    resfreshToken: 'mock-refresh-token'
-                }
+                    name: 'Test User',
+                    role: 'user',
+                    workspaces: []
+                },
+                token: 'mock-jwt-token',
+                refreshToken: 'mock-refresh-token'
             }
         }
         // configuration mock

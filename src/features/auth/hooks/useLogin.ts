@@ -3,6 +3,7 @@ import { authService } from "@/global/services/auth.service";
 import { useAuthStore } from "@/stores/useAuthStore/useAuthStore";
 import { LoginCredencials } from "@/types/api.type";
 import { AxiosError } from "axios";
+import { logger } from "@/lib/logger";
 
 interface UseLoginOptions {
     onSuccess?: () => void;
@@ -24,7 +25,7 @@ export const useLogin = (options?: UseLoginOptions) => {
         },
         onError: (error: AxiosError) => {
             // Manage error (opcional: logging, analytics)
-            console.error('Login Failed:', error)
+            logger.error('Login Failed', error)
             options?.onError?.(error)
         }
     })
