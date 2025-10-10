@@ -15,7 +15,7 @@
 ## 🎯 ÉPICA 1: Autenticación y Autorización
 
 ### US-001: Registro de Usuario
-**Estado:** 🟦 En progreso (25% completo)
+**Estado:** 🟦 En progreso (75% completo - Fases 1-3 completas, pendiente seguridad y accesibilidad)
 
 **Criterios de Aceptación:**
 - Formulario con: email, password, confirmPassword, name
@@ -55,13 +55,13 @@
   - ✅ Test: hook llama a authService.signup
   - ✅ Test: hook guarda usuario en store al éxito
   - ✅ Test: hook maneja errores correctamente
-- ⬜ **Ejecutar:** `pnpm test` - Verificar que TODOS FALLAN ❌
-- ⬜ **Commit:** `test: add signup tests (RED)`
+- ✅ **Ejecutar:** `pnpm test` - Verificar que TODOS FALLAN ❌
+- ✅ **Commit:** `test: add signup tests (RED)`
 
-#### Fase 3: Implementación (GREEN)
-- ⬜ Verificar `signupSchema` en `auth.schema.ts` (ya existe)
-- ⬜ Implementar `authService.signup()` en `services/auth.service.ts`
-- ⬜ **Crear archivo:** `src/features/auth/hooks/useSignup.ts`
+#### Fase 3: Implementación (GREEN) ✅
+- ✅ Verificar `signupSchema` en `auth.schema.ts` (ya existe)
+- ✅ Implementar `authService.signup()` en `services/auth.service.ts`
+- ✅ **Crear archivo:** `src/features/auth/hooks/useSignup.ts`
   ```typescript
   import { useMutation } from '@tanstack/react-query'
   import { authService } from '../../../services/auth.service'
@@ -82,25 +82,25 @@
     })
   }
   ```
-- ⬜ **Crear archivo:** `src/features/auth/components/SignupForm/SignupForm.tsx`
-  - ⬜ Importar useSignup hook
-  - ⬜ Formulario con campos: email, name, password, confirmPassword
-  - ⬜ Validación con signupSchema
-  - ⬜ Manejo de errores por campo
-  - ⬜ Mostrar loading durante signup
-  - ⬜ Mostrar errores del servidor
-  - ⬜ Botón deshabilitado según validación
-- ⬜ **Crear archivo:** `src/features/auth/components/SignupForm/SignupForm.test.tsx`
-- ⬜ **Crear archivo:** `src/features/auth/pages/SignupPage.tsx`
-  - ⬜ Importar SignupForm
-  - ⬜ Layout de página
-  - ⬜ Link a login existente
-  - ⬜ Redirección a login después de éxito
-- ⬜ Añadir ruta `/signup` en router
-- ⬜ Añadir link "Crear cuenta" en LoginPage
-- ⬜ **Ejecutar:** `npm test` - Verificar que TODOS PASAN ✅
-- ⬜ **Ejecutar:** `npm run lint:fix` - Aplicar ESLint + Prettier
-- ⬜ **Commit:** `feat: implement signup (GREEN)`
+- ✅ **Crear archivo:** `src/features/auth/components/SignupForm/SignupForm.tsx`
+  - ✅ Importar useSignup hook
+  - ✅ Formulario con campos: email, name, password, confirmPassword
+  - ✅ Validación con signupSchema
+  - ✅ Manejo de errores por campo
+  - ✅ Mostrar loading durante signup
+  - ✅ Mostrar errores del servidor
+  - ✅ Botón deshabilitado según validación
+- ✅ **Crear archivo:** `src/features/auth/components/SignupForm/SignupForm.test.tsx`
+- ✅ **Crear archivo:** `src/features/auth/pages/SignupPage.tsx`
+  - ✅ Importar SignupForm
+  - ✅ Layout de página
+  - ✅ Link a login existente
+  - ✅ Redirección a login después de éxito
+- ✅ Añadir ruta `/signup` en router
+- ✅ Añadir link "Crear cuenta" en LoginPage
+- ⬜ **Ejecutar:** `pnpm test` - Verificar que TODOS PASAN ✅
+- ⬜ **Ejecutar:** `pnpm run lint:fix` - Aplicar ESLint + Prettier
+- ⬜ **Commit:** `feat: complete signup integration (GREEN)`
 
 #### Fase 4: Seguridad
 - ⬜ Ejecutar agente `security-auditor`

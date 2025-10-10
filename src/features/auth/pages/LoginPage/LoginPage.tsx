@@ -1,7 +1,7 @@
-import { LoginForm } from "../../components/LoginForm";
-import { useAuthStore } from "@/stores/useAuthStore/useAuthStore";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { LoginForm } from '../../components/LoginForm';
+import { useAuthStore } from '@/stores/useAuthStore/useAuthStore';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const LoginPage = () => {
     const { isAuthenticated } = useAuthStore();
@@ -10,7 +10,7 @@ const LoginPage = () => {
     // Redirect to dashboard if already authenticated
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/dashboard", { replace: true });
+            navigate('/dashboard', { replace: true });
         }
     }, [isAuthenticated, navigate]);
 
@@ -24,6 +24,15 @@ const LoginPage = () => {
 
             {/* LoginForm */}
             <LoginForm />
+
+            <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600">
+                    ¿No tienes una cuenta?{' '}
+                    <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                        Regístrate
+                    </Link>
+                </p>
+            </div>
         </div>
     );
 };
